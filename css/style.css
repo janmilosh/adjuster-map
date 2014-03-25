@@ -3,6 +3,10 @@
 	margin: 50px auto;
 }
 
+svg {
+	background: #eee;
+}
+
 h1 {
 	text-align: center;
 	color: teal;
