@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <title>jVectorMap demo</title>
+  <link rel="stylesheet" href="css/jquery-jvectormap-1.2.2.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+  <!--<script src="scripts/jquery-1.8.3.js"></script>-->
+  <script src="scripts/jquery-jvectormap-1.2.2.min.js"></script>
+  <script src="scripts/jquery-jvectormap-us-aea-en.js"></script>
+</head>
+<body>
+  <h1>Map test</h1>
+  <div id="usa-map"></div>
+  <script>
+    $(function(){
+      $('#usa-map').vectorMap({map: 'us_aea_en'});
+    });
+  </script>
+</body>
+</html>

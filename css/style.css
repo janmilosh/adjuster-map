@@ -1,0 +1,11 @@
+#usa-map {
+	width: 700px;
+	height: 467px;
+	margin: 50px auto;
+}
+
+h1 {
+	text-align: center;
+	color: #555;
+	font-family: helvetica, sans-serif;
+}
