@@ -1,21 +1,101 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
-  <title>jVectorMap demo</title>
-  <link rel="stylesheet" href="css/jquery-jvectormap-1.2.2.css" type="text/css" />
+  <title>D3 map demo</title>
   <link rel="stylesheet" href="css/style.css" type="text/css" />
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-  <!--<script src="scripts/jquery-1.8.3.js"></script>-->
-  <script src="scripts/jquery-jvectormap-1.2.2.min.js"></script>
-  <script src="scripts/jquery-jvectormap-us-aea-en.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
 </head>
 <body>
-  <h1>Map test</h1>
-  <div id="usa-map"></div>
-  <script>
-    $(function(){
-      $('#usa-map').vectorMap({map: 'us_aea_en'});
-    });
-  </script>
+  <h1>D3 map</h1>
+  <div id="usa-map">
+    <script>
+      var width = 960,
+      height = 500,
+      active = d3.select(null);
+
+      var projection = d3.geo.albersUsa()
+        .scale(1000)
+        .translate([width / 2, height / 2]);
+
+      var zoom = d3.behavior.zoom()
+        .translate([0, 0])
+        .scale(1)
+        .scaleExtent([1, 8])
+        .on("zoom", zoomed);
+
+      var path = d3.geo.path()
+        .projection(projection);
+
+      var svg = d3.select("#usa-map").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .on("click", stopped, true);
+
+      svg.append("rect")
+        .attr("class", "background")
+        .attr("width", width)
+        .attr("height", height)
+        .on("click", reset);
+
+      var g = svg.append("g");
+
+      svg
+        .call(zoom) // delete this line to disable free zooming
+        .call(zoom.event);
+
+      d3.json("data/us.json", function(error, us) {
+        g.selectAll("path")
+          .data(topojson.feature(us, us.objects.states).features)
+          .enter().append("path")
+          .attr("d", path)
+          .attr("class", "feature")
+          .on("click", clicked);
+
+       g.append("path")
+        .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+        .attr("class", "mesh")
+        .attr("d", path);
+      });
+
+      function clicked(d) {
+        if (active.node() === this) return reset();
+        active.classed("active", false);
+        active = d3.select(this).classed("active", true);
+
+      var bounds = path.bounds(d),
+        dx = bounds[1][0] - bounds[0][0],
+        dy = bounds[1][1] - bounds[0][1],
+        x = (bounds[0][0] + bounds[1][0]) / 2,
+        y = (bounds[0][1] + bounds[1][1]) / 2,
+        scale = .9 / Math.max(dx / width, dy / height),
+        translate = [width / 2 - scale * x, height / 2 - scale * y];
+
+      svg.transition()
+        .duration(750)
+        .call(zoom.translate(translate).scale(scale).event);
+      }
+
+      function reset() {
+        active.classed("active", false);
+        active = d3.select(null);
+
+      svg.transition()
+        .duration(750)
+        .call(zoom.translate([0, 0]).scale(1).event);
+      }
+
+      function zoomed() {
+        g.style("stroke-width", 1.5 / d3.event.scale + "px");
+        g.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+      }
+
+      // If the drag behavior prevents the default click,
+      // also stop propagation so we don’t click-to-zoom.
+      function stopped() {
+        if (d3.event.defaultPrevented) d3.event.stopPropagation();
+      }
+    </script>
+  </div>
 </body>
 </html>

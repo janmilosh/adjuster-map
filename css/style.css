@@ -1,11 +1,31 @@
 #usa-map {
-	width: 700px;
-	height: 467px;
+	width: 960px;
 	margin: 50px auto;
 }
 
 h1 {
 	text-align: center;
-	color: #555;
+	color: teal;
 	font-family: helvetica, sans-serif;
+}
+
+.background {
+  fill: none;
+  pointer-events: all;
+}
+
+.feature {
+  fill: teal;
+  cursor: pointer;
+}
+
+.feature.active {
+  fill: violet;
+}
+
+.mesh {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
