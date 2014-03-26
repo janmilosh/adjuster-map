@@ -4,12 +4,12 @@
 }
 
 svg {
-	background: #eee;
+	background: none;
 }
 
 h1 {
 	text-align: center;
-	color: teal;
+	color: #0792ef;
 	font-family: helvetica, sans-serif;
 }
 
@@ -19,12 +19,12 @@ h1 {
 }
 
 .feature {
-  fill: teal;
+  fill: #bbb;
   cursor: pointer;
 }
 
 .feature.active {
-  fill: violet;
+  fill: #dadada;
 }
 
 .mesh {
