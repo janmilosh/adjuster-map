@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="css/style.css" type="text/css" />
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 </head>
 <body>
   <h1>Adjuster Locations</h1>
@@ -31,7 +32,7 @@
         .attr("width", width)
         .attr("height", height)
         .on("click", stopped, true);
-
+     
       svg.append("rect")
         .attr("class", "background")
         .attr("width", width)
@@ -48,10 +49,25 @@
 
         //load and display the cities
         d3.csv("data/cities.csv", function(error, data) {
-          g.selectAll("circle")
+
+          var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([0, 50])
+            .html(function(d) {
+              if (d.num === "1") {
+                return d.city + ", " + d.state + "<br>" + d.num + " Adjuster";
+              } else {
+                return d.city + ", " + d.state + "<br>" + d.num + " Adjusters"; 
+              }
+          });
+          
+          g.call(tip);
+
+          g.selectAll(".circle")
             .data(data)
             .enter()
             .append("circle")
+            .attr("class", "circle")
             .attr("cx", function(d) {
               return projection([d.lon, d.lat])[0];
             })
@@ -64,21 +80,8 @@
             .style("fill", "#0792ef")
             .style("stroke", "white")
             .style("stroke-width", "0.25")
-            .on("mouseover", function(d, i) { 
-              g.selectAll("text")
-                .data(data)
-                .enter()
-                .append("text")
-                .text(function(d) {
-                  return d.city;
-              })
-              .attr("x", function(d, i) {
-              return projection([d.lon, d.lat])[0];
-              })
-              .attr("y", function(d, i) {
-                return projection([d.lon, d.lat])[1];
-              });
-            });
+            .on('mouseover', tip.show)
+            .on('mouseout', tip.hide);
         });
 
         g.selectAll("path")
