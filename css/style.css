@@ -9,7 +9,7 @@ svg {
 
 h1 {
 	text-align: center;
-	color: #0792ef;
+	color: #1A80C4;
 	font-family: helvetica, sans-serif;
 }
 
@@ -32,4 +32,14 @@ h1 {
   stroke: #fff;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: normal;
+  font-family: sans-serif;
+  padding: 5px;
+  background: rgba(255, 255, 255, 0.7);
+  color: #333;
+  border-radius: 2px;
 }

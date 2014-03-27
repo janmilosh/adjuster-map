@@ -52,7 +52,7 @@
 
           var tip = d3.tip()
             .attr('class', 'd3-tip')
-            .offset([0, 50])
+            .offset([-5, 50])
             .html(function(d) {
               if (d.num === "1") {
                 return d.city + ", " + d.state + "<br>" + d.num + " Adjuster";
@@ -63,6 +63,8 @@
           
           g.call(tip);
 
+          var maxAdjusters = d3.max(data, function(d) { return +d.num; });
+  
           g.selectAll(".circle")
             .data(data)
             .enter()
@@ -75,11 +77,12 @@
               return projection([d.lon, d.lat])[1];
             })
             .attr("r", function(d) {
-              return ((d.num * 0.1) + 2);
+              return ((d.num * 3/maxAdjusters) + 2);
             })
-            .style("fill", "#0792ef")
+            .style("fill", "#1A80C4")
             .style("stroke", "white")
             .style("stroke-width", "0.25")
+            .style("cursor", "pointer")
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide);
         });
@@ -91,7 +94,7 @@
           .attr("class", "feature")
           .on("click", clicked);
 
-         g.append("path")
+        g.append("path")
           .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
           .attr("class", "mesh")
           .attr("d", path);
@@ -135,9 +138,6 @@
         if (d3.event.defaultPrevented) d3.event.stopPropagation();
       }
 
-      function hover() {
-
-      }
     </script>
   </div>
 </body>
