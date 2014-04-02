@@ -1,6 +1,7 @@
 #usa-map {
 	width: 720px;
 	margin: 30px auto;
+  overflow: hidden;
 }
 
 svg {
