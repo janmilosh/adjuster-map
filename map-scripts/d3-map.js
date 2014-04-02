@@ -99,10 +99,10 @@ svg
   .call(zoom) // delete this line to disable free zooming
   .call(zoom.event);
 
-d3.json("map-data/us.json", function(error, us) {
+d3.json("ee_sys/d3-map/map-data/us.json", function(error, us) {
 
   //load and display the cities
-  d3.csv("map-data/cities.csv", function(error, data) {
+  d3.csv("ee_sys/d3-map/map-data/cities.csv", function(error, data) {
 
   var maxAdjusters = d3.max(data, function(d) { return +d.num; });
 
