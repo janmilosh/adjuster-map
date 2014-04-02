@@ -1,3 +1,70 @@
+d3.helper = {};
+
+d3.helper.tooltip = function(){
+  var tooltipDiv;
+  var bodyNode = d3.select('body').node();
+
+  function tooltip(selection){
+
+    selection.on('mouseover.tooltip', function(d){
+      // Clean up lost tooltips
+      d3.select('body').selectAll('div.tooltip').remove();
+      // Append tooltip
+      tooltipDiv = d3.select('body')
+                    .append('div')
+                    .attr('class', 'tooltip')
+      var absoluteMousePos = d3.mouse(bodyNode);
+      tooltipDiv.style({
+        left: (absoluteMousePos[0] + 13)+'px',
+        top: (absoluteMousePos[1] - 23)+'px',
+        'background': 'rgba(255, 255, 255, 0.7)',
+        color: '#333',
+        padding: '5px',
+        'border-radius': '2px',
+        position: 'absolute',
+        'z-index': 1001,
+        'box-shadow': '0 1px 2px 0 rgba(0,0,0,0.4)'
+      });
+
+      var first_line = '<p>' + d.city + ', ' + d.state + '</p>'
+      var second_line;
+      if (d.num === '1') {
+        second_line = '<p>' + d.num + ' adjuster</p>'
+      } else {
+        second_line = '<p>' + d.num + ' adjusters</p>'
+      }
+      
+      tooltipDiv.html(first_line + second_line)
+    })
+    .on('mousemove.tooltip', function(){
+      // Move tooltip
+      var absoluteMousePos = d3.mouse(bodyNode);
+      tooltipDiv.style({
+        left: (absoluteMousePos[0] + 13)+'px',
+        top: (absoluteMousePos[1] - 23)+'px'
+      });
+    })
+    .on('mouseout.tooltip', function(){
+      // Remove tooltip
+      tooltipDiv.remove();
+    });
+  }
+
+  tooltip.attr = function(_x){
+    if (!arguments.length) return attrs;
+    attrs = _x;
+    return this;
+  };
+
+  tooltip.style = function(_x){
+    if (!arguments.length) return styles;
+    styles = _x;
+    return this;
+  };
+
+  return tooltip;
+};
+
 var width = 720,
     height = 480,
     active = d3.select(null);
@@ -32,23 +99,10 @@ svg
   .call(zoom) // delete this line to disable free zooming
   .call(zoom.event);
 
-d3.json("ee_sys/d3-map/map-data/us.json", function(error, us) {
+d3.json("map-data/us.json", function(error, us) {
 
   //load and display the cities
-  d3.csv("ee_sys/d3-map/map-data/cities.csv", function(error, data) {
-  
-    var tip = d3.tip()
-      .attr('class', 'd3-tip')
-      .direction('ne')
-      .html(function(d) {
-        if (d.num === "1") {
-          return d.city + ", " + d.state + "<br>" + d.num + " Adjuster";
-        } else {
-          return d.city + ", " + d.state + "<br>" + d.num + " Adjusters"; 
-        }
-    });
-    
-  g.call(tip);
+  d3.csv("map-data/cities.csv", function(error, data) {
 
   var maxAdjusters = d3.max(data, function(d) { return +d.num; });
 
@@ -70,8 +124,7 @@ d3.json("ee_sys/d3-map/map-data/us.json", function(error, us) {
     .style("stroke", "white")
     .style("stroke-width", "0.25")
     .style("cursor", "pointer")
-    .on('mouseover', tip.show)
-    .on('mouseout', tip.hide);
+    .call(d3.helper.tooltip());
   });
 
   g.selectAll("path")
