@@ -5,7 +5,6 @@
    writes the values to a csv file that is used in the coverage map
    on mariposaltd.com'''
 
-
 from urllib2 import urlopen
 from json import load, dumps
 import time
