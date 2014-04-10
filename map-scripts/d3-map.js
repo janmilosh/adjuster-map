@@ -99,9 +99,13 @@ svg
   .call(zoom) // delete this line to disable free zooming
   .call(zoom.event);
 
+// File path for production "ee_sys/d3-map/map-data/us.json"
+// File path for development (both local and gh-pages) "map-data/us.json"
 d3.json("ee_sys/d3-map/map-data/us.json", function(error, us) {
 
   //load and display the cities
+  // File path for production "ee_sys/d3-map/map-data/cities.csv"
+  // File path for development (both local and gh-pages) "map-data/cities.csv"
   d3.csv("ee_sys/d3-map/map-data/cities.csv", function(error, data) {
 
   var maxAdjusters = d3.max(data, function(d) { return +d.num; });
