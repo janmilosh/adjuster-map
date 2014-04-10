@@ -108,27 +108,27 @@ d3.json("ee_sys/d3-map/map-data/us.json", function(error, us) {
   // File path for development (both local and gh-pages) "map-data/cities.csv"
   d3.csv("ee_sys/d3-map/map-data/cities.csv", function(error, data) {
 
-  var maxAdjusters = d3.max(data, function(d) { return +d.num; });
+    var maxAdjusters = d3.max(data, function(d) { return +d.num; });
 
-  g.selectAll(".circle")
-    .data(data)
-    .enter()
-    .append("circle")
-    .attr("class", "circle")
-    .attr("cx", function(d) {
-      return projection([d.lon, d.lat])[0];
-    })
-    .attr("cy", function(d) {
-      return projection([d.lon, d.lat])[1];
-    })
-    .attr("r", function(d) {
-      return ((d.num * 2.5/maxAdjusters) + 1.5);
-    })
-    .style("fill", "#1A80C4")
-    .style("stroke", "white")
-    .style("stroke-width", "0.25")
-    .style("cursor", "pointer")
-    .call(d3.helper.tooltip());
+    g.selectAll(".circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("class", "circle")
+      .attr("cx", function(d) {
+        return projection([d.lon, d.lat])[0];
+      })
+      .attr("cy", function(d) {
+        return projection([d.lon, d.lat])[1];
+      })
+      .attr("r", function(d) {
+        return ((d.num * 2.5/maxAdjusters) + 1.5);
+      })
+      .style("fill", "#1A80C4")
+      .style("stroke", "white")
+      .style("stroke-width", "0.25")
+      .style("cursor", "pointer")
+      .call(d3.helper.tooltip());
   });
 
   g.selectAll("path")
