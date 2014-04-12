@@ -42,9 +42,9 @@ def convert_json_and_sort(data):
             state = location['state']
             number = location['number']
 
-            # We need to put in pauses because Google's geolocator throttles us
-            if index % 100 == 0 and index != 0:
-                time.sleep(60)
+            # We need to put in pauses because Google's geolocator throttles us to one request/sec
+            # So here we just sleep for a second before each request
+            time.sleep(1)
 
             # Get latitude and longitude from Google geolocation api
             geolocation = get_geodata(city.replace(' ', '+'), state)
@@ -61,13 +61,31 @@ def convert_json_and_sort(data):
     # Reverse sort the list by number of adjusters    
     city_list.sort(key=lambda x: x[2], reverse=True)
 
+    # Print a summary of potential problem listings so they can be corrected manually
+    print('In cities.csv, look for these potential problem cities:')
+    for index, item in enumerate(city_list):        
+        # We know that Calgary, Alberta shows up despite filtering for USA states
+        # and we know that sometimes there are typos and get non-alpha city names
+        if item[0] == 'Calgary' or contains_number(item[0]) == True:
+            print(str(index + 2) + ', ' + item[0] + ', ' + item[1])    
+
     # Print to the csv file
     f = open('cities.csv', 'w')
     f.write('city,state,num,lat,lon\n')
-    for item in city_list:
-        f.write(item[0] + ',' + item[1] + ',' + str(item[2]) + ',' + str(item[3]) + ',' + str(item[4]) + '\n')
+
+    # Loop through the city list (except for the last city) and print comma-separated values -- with a new line at  the end
+    for item in city_list[:-1]:
+        f.write(item[0] + ',' + item[1] + ',' + str(item[2]) + ',' + str(item[3]) + ',' + str(item[4]) + '\n')      
+    
+    # Print the last city's values without a new line at the end
+    f.write(city_list[-1][0] + ',' + city_list[-1][1] + ',' + str(city_list[-1][2]) + ',' + str(city_list[-1][3]) + ',' + str(city_list[-1][4]))        
+            
     f.close()
-        
+
+# A little function that checks a string for numbers
+def contains_number(s):
+    return any(i.isdigit() for i in s)
+
 # Get geodata and return list containing latitude and longitude
 def get_geodata(city, state):
     url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + city + ',+' + state + '&sensor=false&key=AIzaSyDe1fq7oib8shkDokkXzJ8H1txRTLjR8k8'
